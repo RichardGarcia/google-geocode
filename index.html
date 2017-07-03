@@ -9,7 +9,13 @@
   <title>Google Maps Geocoding</title>
 </head>
 <body>
-  
+
+  <div class="container">
+    <div id="fullAddressOutput"></div>
+    <div id="addressDetailsOutput"></div>
+  </div>
+
+
   <script>
     // call geocode function
     geocode();
@@ -26,7 +32,33 @@
           }
         })
         .then (function(response) {
+          // full log details
           console.log(response);
+
+          // formatted location details
+          var fomattedAddress = response.data.results[0].formatted_address;
+          var fomattedAddressOutput =
+          `
+          <ul class="list-group">
+            <li class="list-group-item">${fomattedAddress}</li>
+          </ul>
+          `;
+
+        // address components
+        var addressComponents = response.data.results[0].address_components;
+        var addressComponentsOutput = '<ul class="list-group">'
+          for (var i = 0; i < addressComponents.length; i++) {
+          addressComponentsOutput += `
+          <li class="list-group-item">
+            <strong>${addressComponents[i].types[0]}:</strong> &nbsp; ${addressComponents[i].long_name}
+          </li>
+          `;
+          }
+          addressComponentsOutput += '</ul>'
+
+          // formatted address to browser
+          document.getElementById("fullAddressOutput").innerHTML = fomattedAddressOutput;
+          document.getElementById("addressDetailsOutput").innerHTML = addressComponentsOutput
         })
         .catch(function(error) {
           console.log(error);
